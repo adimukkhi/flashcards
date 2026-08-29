@@ -1,4 +1,7 @@
-Flask
-Flask-SQLAlchemy
-google-generativeai
-python-pptx
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+google-genai==0.1.1
+python-pptx==1.0.2
+Markdown==3.6
+python-dotenv==1.0.1
+gunicorn==22.0.0
