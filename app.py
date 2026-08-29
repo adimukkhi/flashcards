@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.config["folder"] = folder
 app.config["ASSIGN_FOLDER"] = folder
 app.config["UPLOAD_FOLDER"] = folder
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///../database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
