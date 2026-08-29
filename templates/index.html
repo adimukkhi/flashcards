@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+    <div id="loadingOverlay" style="display: none; position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.7); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; color: #fff; font-family: inherit;">
+        <div style="width: 48px; height: 48px; border: 5px solid #fff; border-bottom-color: #6366f1; border-radius: 50%; display: inline-block; box-sizing: border-box; animation: spin 1s linear infinite;"></div>
+        <p style="margin-top: 16px; font-weight: 600; font-size: 1.1rem; letter-spacing: 0.02em;">Processing inputs and compiling flashcards...</p>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 4px;">Multimedia data files can add several seconds.</p>
+    </div>
+
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+
+    {% if flashcards %}
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+            {% if history_decks %}
+                {% for deck in history_decks %}
+                    {% if deck.id == active_id %}
+                        <h2 style="margin: 0; font-size: 1.5rem; color: #0f172a;">📚 {{ deck.title }}</h2>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <a href="/" style="font-size: 0.85rem; color: #4f46e5; text-decoration: none;">← Process New Material</a>
+        </div>
+
+        <div class="flashcard-container">
+            {% for card in flashcards %}
+                <div class="card" onclick="this.classList.toggle('rotate-y-180')">
+                    
+                    <div class="card-front">
+                        <span class="card-label">Question</span>
+                        <div class="card-text">{{ card.question|markdown|safe }}</div>
+                        <span class="flip-hint">Tap to flip 🔄</span>
+                    </div>
+                    
+                    <div class="card-back">
+                        <span class="card-label">Answer</span>
+                        <div class="card-text">{{ card.answer|markdown|safe }}</div>
+                        <span class="flip-hint">Tap to return 🔄</span>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="form-panel">
+        <h3>Create New Study Deck</h3>
+        <form method="post" action="/" enctype="multipart/form-data" onsubmit="showLoading()">
+            
+            <div class="form-group">
+                <label>Option A: Paste Source Notes</label>
+                <textarea name="name" rows="5" placeholder="Paste structural text or summaries here..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Option B: Upload Audio / Video File</label>
+    
+                <label for="media_file" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border: 2px dashed #cbd5e1; border-radius: 12px; background-color: #f8fafc; cursor: pointer; transition: 0.2s; text-align: center;" onmouseover="this.style.borderColor='#6366f1'; this.style.backgroundColor='#f5f3ff';" onmouseout="this.style.borderColor='#cbd5e1'; this.style.backgroundColor='#f8fafc';">
+        
+                    <span style="font-size: 1.5rem; margin-bottom: 4px;">📁</span>
+                    <span id="file-label-text" style="font-size: 0.85rem; font-weight: 500; color: #4f46e5;">Click to browse computer</span>
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">Supports MP3, MP4, PPT or PPTX</span>
+        
+                    <input type="file" id="media_file" name="media_file" accept=".mp3,.mp4,.ppt,.pptx" style="display: none;" onchange="updateFileName(this)">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Target Deck Count</label>
+                <input type="number" name="number" min="1" max="50" value="10">
+            </div>
+
+            <button type="submit" class="submit-btn">Generate Flashcards</button>
+        </form>
+    </div>
+
+    <script>
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function updateFileName(input) {
+            const labelText = document.getElementById('file-label-text');
+            if (input.files && input.files.length > 0) {
+                labelText.innerText = "📄 Selected: " + input.files[0].name;
+                labelText.style.color = "#16a34a"; 
+            } else {
+                labelText.innerText = "Click to browse computer";
+                labelText.style.color = "#4f46e5";
+            }
+        }
+    </script>
+
+{% endblock %}

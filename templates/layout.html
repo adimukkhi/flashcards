@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdiFlash Pro</title>
+    <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpAK6cTcMeXqWqnws1lSKW8HZDf-ziPk7KXGzRpxOakqOXQ5_ay-HS-XY&s=10" type="image/png">
+    
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        aside {
+            width: 260px;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            border-right: 1px solid #1e293b;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+        .sidebar-header {
+            padding: 16px;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo { font-size: 1.25rem; font-weight: 700; color: #fff; text-decoration: none; }
+        .new-btn { font-size: 0.75rem; background-color: #4f46e5; color: #fff; font-weight: 500; padding: 6px 10px; border-radius: 6px; text-decoration: none; transition: 0.2s; }
+        .new-btn:hover { background-color: #4338ca; }
+        .nav-list { flex: 1; overflow-y: auto; padding: 12px; }
+        .nav-title { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 8px; }
+        
+        .history-item { display: flex; align-items: center; justify-content: space-between; padding: 8px; border-radius: 6px; font-size: 0.875rem; color: #94a3b8; text-decoration: none; transition: 0.2s; margin-bottom: 4px; }
+        .history-item:hover { background-color: #1e293b; color: #f1f5f9; }
+        .active-deck { background-color: #1e293b; color: #818cf8; font-weight: 600; }
+        .delete-btn { background: none; border: none; color: #475569; font-weight: bold; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: 0.2s; }
+        .delete-btn:hover { color: #f43f5e; background-color: rgba(244, 63, 94, 0.1); }
+        .no-decks { font-size: 0.85rem; color: #475569; font-style: italic; padding-left: 8px; }
+
+        main { flex: 1; padding: 40px; box-sizing: border-box; display: flex; justify-content: center; overflow-y: auto; }
+        .container { max-width: 900px; width: 100%; }
+
+        .flashcard-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px; perspective: 1000px; }
+        .card { height: 200px; position: relative; transform-style: preserve-3d; transition: transform 0.5s ease-out; cursor: pointer; }
+        .card.rotate-y-180 { transform: rotateY(180deg); }
+        .card-front, .card-back { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); box-sizing: border-box; }
+        .card-front { background-color: #fff; color: #334155; }
+        .card-back { background-color: #eef2ff; color: #1e1b4b; transform: rotateY(180deg); border-color: #e0e7ff; }
+        .card-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6366f1; }
+        .card-back .card-label { color: #4f46e5; }
+        
+        .card-text { font-size: 0.9rem; font-weight: 500; margin: auto 0; overflow-y: auto; max-height: 110px; }
+        .card-text p { margin: 0 0 8px 0; }
+        .card-text p:last-child { margin-bottom: 0; }
+        .flip-hint { font-size: 0.7rem; color: #94a3b8; text-align: right; }
+
+        .form-panel { background: #fff; border: 1px solid #e2e8f0; padding: 30px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); max-width: 550px; margin: 0 auto; }
+        .form-panel h3 { margin-top: 0; margin-bottom: 20px; color: #0f172a; font-size: 1.25rem; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; }
+        textarea { width: 100%; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; font-size: 0.9rem; font-family: inherit; resize: none; box-sizing: border-box; outline: none; transition: 0.2s; }
+        input[type="number"], input[type="file"] { width: 100%; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; font-size: 0.9rem; font-family: inherit; box-sizing: border-box; outline: none; transition: 0.2s; }
+        textarea:focus, input[type="number"]:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
+        .submit-btn { width: 100%; background-color: #4f46e5; color: #fff; border: none; padding: 12px; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .submit-btn:hover { background-color: #4338ca; }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div class="sidebar-header">
+            <a href="/" class="logo">⚡ AdiFlash</a>
+            <a href="/" class="new-btn">+ New Deck</a>
+        </div>
+        <nav class="nav-list">
+            <div class="nav-title">Study History</div>
+            {% if history_decks %}
+                {% for deck in history_decks %}
+                    <div class="history-item {% if deck.id == active_id %}active-deck{% endif %}">
+                        <a href="/?deck_id={{ deck.id }}" style="color: inherit; text-decoration: none; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px;">
+                            💬 {{ deck.title }}
+                        </a>
+                        <form action="/delete/{{ deck.id }}" method="POST" style="margin: 0; display: inline;">
+                            <button type="submit" class="delete-btn" title="Delete Deck">✕</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-decks">No generated decks yet.</div>
+            {% endif %}
+        </nav>
+    </aside>
+
+    <main>
+        <div class="container">
+            {% block body %}{% endblock %}
+        </div>
+    </main>
+
+</body>
+</html>
