@@ -37,6 +37,9 @@ class FlashcardItem(db.Model):
     question = db.Column(db.Text, nullable=False)
     answer = db.Column(db.Text, nullable=False)
 
+with app.app_context():
+    db.create_all()
+
 def extract_text_from_pptx(file_path):
     prs = Presentation(file_path)
     slide_text_list = []
